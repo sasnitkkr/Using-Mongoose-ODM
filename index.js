@@ -7,8 +7,15 @@ mongoose.connect('mongodb://localhost:27017/fruitsDB',{useNewUrlParser: true, us
 
 /* Creating Schema */
 const fruitSchema = new mongoose.Schema({
-    name : String,
-    rating : Number,
+    name : {
+        type : String,
+        required : true
+    },
+    rating : {
+        type : Number,
+        min: [1, 'Must be at least 1, got {VALUE}'],
+        max: [10, 'Must be at most 10, got {VALUE}']
+    },
     review : String
 });
 
@@ -20,11 +27,18 @@ const Fruit = mongoose.model('Fruit', fruitSchema);
 
 const apple = new Fruit({
     name: "Apple",
-    rating : 5,
+    rating : 56,
     review : "Apple a day!!"
 });
 
 // apple.save();
+
+const peach = new Fruit({
+    rating : 10,
+    review : "yummy peach"
+});
+
+// peach.save();
 
 /* ------------ PEOPLE COLLECTION/TABLE ------------ */
 
@@ -72,17 +86,36 @@ const kiwi = new Fruit({
 //     }
 // });
 
-/* Reading Data from Collection */
+/* ------------ Reading Data from Collection --------------*/
 Fruit.find({}, function(err, docs){
     if(err){
         console.log(err);
     }else{
         // It is good practice to close connection after last interaction with database
-        mongoose.connection.close();
+        // mongoose.connection.close();
         console.log("Read Successfully!");
         docs.forEach(element => {
             console.log(element.name);
         });
+    }
+});
+
+/* ----------- DELETE SOME EXTRA ENTRIES ADDED DUE TO NODEMON ------------ */
+// 1st parameter is array-filter i.e. delete ids in
+Fruit.deleteMany({_id: ["60f9a3f6318d1c18e4182587", "60f9a3f6318d1c18e4182585", "60f9a3f6318d1c18e4182586", "60fadc5eab86fc3f989c8922", "60fadc9a68b9d5344884204d"]}, function(err){
+    if(err){
+        console.log(err);
+    }else{
+        console.log("Deleted Many Successfully");
+    }
+});
+
+Fruit.updateOne({_id : "60fadc4725830440345ca1ca"},{name : "Peach"}, function(err){
+    if(err){
+        console.log(err);
+    }else{
+        mongoose.connection.close();
+        console.log("Updated name to Peach, Successfully!");
     }
 });
 
