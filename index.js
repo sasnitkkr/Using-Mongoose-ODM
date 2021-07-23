@@ -44,26 +44,55 @@ const peach = new Fruit({
 
 const peopleSchema = mongoose.Schema({
     name: String,
-    age : Number
+    age : Number,
+    favouriteFruit : fruitSchema
 });
 
 const People = new mongoose.model('People', peopleSchema);
 
+// Create favourite fruit for john
+
+const mango = new Fruit({
+    name: "Mango",
+    rating : 10,
+    review : "King of Fruits"
+});
+
+// mango.save();
+
 const john = new People({
     name : "John",
-    age : 37
+    age : 37,
+});
+
+People.updateOne({name :"John"}, {favouriteFruit : mango}, function(err){
+    if(err){
+        console.log(err);
+    }else{
+        console.log("John Given Fav Fruit");
+    }
 });
 
 // john.save();
-
-/* ----- ADDING SOME MORE FRUITS -----*/
-
 
 const pineApple = new Fruit({
     name : "Pine Apple",
     rating : 5,
     review: "Sweet and Sour"
 });
+
+const person = new People({
+    name : "Amy",
+    age : 12, 
+    favouriteFruit : pineApple
+});
+
+// person.save();
+
+/* ----- ADDING SOME MORE FRUITS -----*/
+
+
+
 
 const banana = new Fruit({
     name : "Banana",
@@ -92,7 +121,7 @@ Fruit.find({}, function(err, docs){
         console.log(err);
     }else{
         // It is good practice to close connection after last interaction with database
-        // mongoose.connection.close();
+        mongoose.connection.close();
         console.log("Read Successfully!");
         docs.forEach(element => {
             console.log(element.name);
@@ -102,22 +131,22 @@ Fruit.find({}, function(err, docs){
 
 /* ----------- DELETE SOME EXTRA ENTRIES ADDED DUE TO NODEMON ------------ */
 // 1st parameter is array-filter i.e. delete ids in
-Fruit.deleteMany({_id: ["60f9a3f6318d1c18e4182587", "60f9a3f6318d1c18e4182585", "60f9a3f6318d1c18e4182586", "60fadc5eab86fc3f989c8922", "60fadc9a68b9d5344884204d"]}, function(err){
-    if(err){
-        console.log(err);
-    }else{
-        console.log("Deleted Many Successfully");
-    }
-});
+// Fruit.deleteMany({_id: ["60f9a3f6318d1c18e4182587", "60f9a3f6318d1c18e4182585", "60f9a3f6318d1c18e4182586", "60fadc5eab86fc3f989c8922", "60fadc9a68b9d5344884204d"]}, function(err){
+//     if(err){
+//         console.log(err);
+//     }else{
+//         console.log("Deleted Many Successfully");
+//     }
+// });
 
-Fruit.updateOne({_id : "60fadc4725830440345ca1ca"},{name : "Peach"}, function(err){
-    if(err){
-        console.log(err);
-    }else{
-        mongoose.connection.close();
-        console.log("Updated name to Peach, Successfully!");
-    }
-});
+// Fruit.updateOne({_id : "60fadc4725830440345ca1ca"},{name : "Peach"}, function(err){
+//     if(err){
+//         console.log(err);
+//     }else{
+//         mongoose.connection.close();
+//         console.log("Updated name to Peach, Successfully!");
+//     }
+// });
 
 
 
